@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ridge Personalization Drawer Prototype</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="promo">
+      <span>GET IT BY FATHER'S DAY</span>
+      <span class="timer"><b>03</b> DAYS <b>06</b> HRS <b>57</b> MINS <b>36</b> SEC</span>
+    </div>
+
+    <header class="site-header">
+      <button class="icon-button" aria-label="Open menu">MENU</button>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#">WALLETS</a>
+        <a href="#">RINGS</a>
+        <a href="#">TRAVEL</a>
+        <a href="#">TECH</a>
+        <a class="sale" href="#">SALE</a>
+      </nav>
+      <div class="logo">RIDGE</div>
+      <div class="header-actions">
+        <button>SEARCH</button>
+        <button>SUPPORT</button>
+        <button>CART</button>
+      </div>
+    </header>
+
+    <main class="page-shell" id="pageShell">
+      <section class="gallery" aria-label="Product media">
+        <div class="feature-badge">2.0 FEATURES</div>
+        <div class="product-stage">
+          <img src="./assets/wallet-main.png" alt="Royal Black Ridge Wallet" />
+        </div>
+        <div class="thumb-row" aria-label="Product thumbnails">
+          <button class="thumb selected"><img src="./assets/wallet-thumb.png" alt="" /></button>
+          <button class="thumb"><img src="./assets/detail-thumb.png" alt="" /></button>
+          <button class="thumb"><img src="./assets/kit-keycase.png" alt="" /></button>
+          <button class="thumb"><img src="./assets/kit-complete.png" alt="" /></button>
+        </div>
+      </section>
+
+      <aside class="purchase-panel" aria-label="Purchase details">
+        <div class="reviews">★★★★★ <span>47,755 REVIEWS</span></div>
+        <h1>RIDGE WALLET</h1>
+        <div class="price">$76.00 <s>$95</s> <span>20% OFF</span></div>
+
+        <div class="tabs">
+          <button class="active">WALLET ONLY</button>
+          <button>FULL KIT</button>
+          <button class="save">SAVE 41%</button>
+        </div>
+
+        <section class="swatches" aria-label="Color choices">
+          <h2>COLOR: <span id="pdpColor">Royal Black</span></h2>
+          <div class="swatch-grid">
+            <button class="swatch selected" style="--swatch: #222"></button>
+            <button class="swatch" style="--swatch: #aaa"></button>
+            <button class="swatch" style="--swatch: #0f1113"></button>
+            <button class="swatch" style="--swatch: #1d2537"></button>
+            <button class="swatch" style="--swatch: #c46b19"></button>
+            <button class="swatch" style="--swatch: #686a55"></button>
+            <button class="swatch" style="--swatch: #3a2824"></button>
+            <button class="swatch" style="--swatch: #d7d7d7"></button>
+            <button class="swatch" style="--swatch: #cc050a"></button>
+            <button class="swatch" style="--swatch: linear-gradient(135deg,#19233f,#b96b2c)"></button>
+            <button class="swatch" style="--swatch: linear-gradient(135deg,#000,#454545)"></button>
+            <button class="swatch" style="--swatch: linear-gradient(135deg,#123,#fff,#b71928)"></button>
+          </div>
+        </section>
+
+        <section class="addon">
+          <h2>NEW ADD ONS:</h2>
+          <div class="tracker">
+            <img src="./assets/wallet-thumb.png" alt="" />
+            <div>
+              <strong>TRACKER CARD</strong>
+              <p>$29 <s>$45</s> <span>36% OFF</span></p>
+            </div>
+            <button class="toggle" aria-label="Toggle tracker card"></button>
+          </div>
+        </section>
+
+        <button class="personalize-link active" id="openDrawer">Personalize This Item</button>
+        <div class="applied-summary" id="appliedSummary" hidden></div>
+        <button class="cart-button" id="cartButton">ADD TO CART</button>
+        <p class="payments">4 interest-free payments or as low as $14/mo with affirm. <a href="#">Learn more</a></p>
+      </aside>
+    </main>
+
+    <aside class="drawer open" id="drawer" aria-label="Personalization drawer">
+      <div class="drawer-layout">
+        <nav class="step-rail" aria-label="Personalization steps">
+          <button class="step-dot active" data-step="kit"><span>1</span><b>KIT</b></button>
+          <button class="step-dot" data-step="finish"><span>2</span><b>FINISH</b></button>
+          <button class="step-dot" data-step="color"><span>3</span><b>COLOR</b></button>
+          <button class="step-dot" data-step="design"><span>4</span><b>DESIGN</b></button>
+          <button class="step-dot" data-step="placement"><span>5</span><b>PLACEMENT</b></button>
+          <button class="step-dot" data-step="review"><span>6</span><b>REVIEW</b></button>
+        </nav>
+
+        <div class="drawer-main">
+          <header class="drawer-header">
+            <button class="close-button" id="closeDrawer" aria-label="Close personalization drawer">×</button>
+            <h2>PERSONALIZE THIS ITEM</h2>
+            <p>Ridge Wallet - <span id="headerColor">Royal Black</span></p>
+            <span id="stepLabel">Step 1 of 6</span>
+          </header>
+
+          <section class="step-panel active" data-panel="kit">
+            <h3>START WITH YOUR SET</h3>
+            <p class="hint">Choose the items you want to personalize.</p>
+            <div class="choice-list" id="kitChoices"></div>
+            <div class="next-note">
+              <strong>Next: choose Laser Engraving or UV Print.</strong>
+              <span>Available colors update after finish.</span>
+            </div>
+          </section>
+
+          <section class="step-panel" data-panel="finish">
+            <h3>CHOOSE YOUR FINISH</h3>
+            <p class="hint">Finish determines available colors and design types.</p>
+            <div class="finish-grid" id="finishChoices"></div>
+            <div class="dependency-note" id="finishNote"></div>
+          </section>
+
+          <section class="step-panel" data-panel="color">
+            <h3>SELECT A COLOR</h3>
+            <p class="hint">Only colors available for your kit and finish are active.</p>
+            <div class="color-grid" id="colorChoices"></div>
+          </section>
+
+          <section class="step-panel" data-panel="design">
+            <h3>ADD YOUR DESIGN</h3>
+            <p class="hint">Choose a design type available for the selected finish.</p>
+            <div class="type-tabs" id="designTypes"></div>
+            <div class="text-editor" id="textEditor">
+              <label for="engravingText">Text</label>
+              <input id="engravingText" maxlength="12" value="KL" />
+              <span id="charCount">10 characters remaining</span>
+            </div>
+          </section>
+
+          <section class="step-panel" data-panel="placement">
+            <h3>PLACE THE DESIGN</h3>
+            <p class="hint">Preview the personalization location before applying it.</p>
+            <div class="placement-preview">
+              <img src="./assets/wallet-main.png" alt="Wallet preview" />
+              <span class="engraving-mark" id="engravingMark">KL</span>
+            </div>
+            <div class="placement-options" id="placementChoices"></div>
+          </section>
+
+          <section class="step-panel" data-panel="review">
+            <h3>REVIEW YOUR ORDER</h3>
+            <p class="hint">Confirm every choice before this personalized item is added to cart.</p>
+            <div class="review-product">
+              <img src="./assets/wallet-thumb.png" alt="Selected Ridge Wallet" />
+              <div>
+                <strong>RIDGE WALLET</strong>
+                <span id="reviewSubtitle">Personalized Royal Black</span>
+              </div>
+            </div>
+            <div class="review-list" id="reviewList"></div>
+            <div class="review-total">
+              <span>Personalization</span>
+              <strong>Included</strong>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="path-summary" aria-label="Personalization path">
+        <h3>YOUR PERSONALIZATION PATH</h3>
+        <div class="summary-row" id="summaryRow"></div>
+      </section>
+
+      <footer class="drawer-footer">
+        <a href="https://tally.so/" target="_blank" rel="noreferrer">Bulk order? Open bulk request</a>
+        <button id="continueButton">CONTINUE <span>→</span></button>
+      </footer>
+    </aside>
+
+    <div class="drawer-scrim open" id="scrim"></div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

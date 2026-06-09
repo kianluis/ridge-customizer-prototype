@@ -135,7 +135,11 @@
 
           <section class="step-panel" data-panel="design">
             <h3>ADD YOUR DESIGN</h3>
-            <p class="hint">Choose a design type available for the selected finish.</p>
+            <p class="hint">Choose the product receiving this design, then pick a design type.</p>
+            <div class="target-section" id="targetSection" hidden>
+              <div class="section-kicker">Apply design to</div>
+              <div class="target-grid" id="targetChoices"></div>
+            </div>
             <div class="type-tabs" id="designTypes"></div>
             <div class="text-editor" id="textEditor">
               <label for="engravingText">Text</label>
@@ -148,9 +152,10 @@
             <h3>PLACE THE DESIGN</h3>
             <p class="hint">Preview the personalization location before applying it.</p>
             <div class="placement-preview">
-              <img src="./assets/wallet-main.png" alt="Wallet preview" />
+              <img id="placementImage" src="./assets/wallet-main.png" alt="Selected product preview" />
               <span class="engraving-mark" id="engravingMark">KL</span>
             </div>
+            <div class="placement-caption" id="placementCaption">Applying to Wallet</div>
             <div class="placement-options" id="placementChoices"></div>
           </section>
 
@@ -158,9 +163,9 @@
             <h3>REVIEW YOUR ORDER</h3>
             <p class="hint">Confirm every choice before this personalized item is added to cart.</p>
             <div class="review-product">
-              <img src="./assets/wallet-thumb.png" alt="Selected Ridge Wallet" />
+              <img id="reviewProductImage" src="./assets/wallet-thumb.png" alt="Selected Ridge product" />
               <div>
-                <strong>RIDGE WALLET</strong>
+                <strong id="reviewProductName">RIDGE WALLET</strong>
                 <span id="reviewSubtitle">Personalized Royal Black</span>
               </div>
             </div>

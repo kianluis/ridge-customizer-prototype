@@ -3,6 +3,7 @@ const state = {
   kit: 'wallet',
   finish: null,
   color: null,
+  targetProduct: 'wallet',
   design: null,
   text: 'KL',
   placement: null,
@@ -69,6 +70,33 @@ const designTypes = [
   { id: 'icon', label: 'ICON' },
 ];
 
+const productTargets = [
+  {
+    id: 'wallet',
+    label: 'Wallet',
+    detail: 'Front face of the Ridge Wallet',
+    image: './assets/wallet-thumb.png',
+    preview: './assets/wallet-main.png',
+    kits: ['wallet', 'keycase', 'complete'],
+  },
+  {
+    id: 'keycase',
+    label: 'Keycase',
+    detail: 'Personalize the matching keycase',
+    image: './assets/kit-keycase.png',
+    preview: './assets/kit-keycase.png',
+    kits: ['keycase', 'complete'],
+  },
+  {
+    id: 'pen',
+    label: 'Pen',
+    detail: 'Apply the design to the pen barrel',
+    image: './assets/kit-complete.png',
+    preview: './assets/kit-complete.png',
+    kits: ['complete'],
+  },
+];
+
 const placements = [
   { id: 'center', label: 'CENTER' },
   { id: 'bottom-right', label: 'BOTTOM RIGHT' },
@@ -100,6 +128,10 @@ const stepLabel = document.querySelector('#stepLabel');
 const engravingInput = document.querySelector('#engravingText');
 const charCount = document.querySelector('#charCount');
 const engravingMark = document.querySelector('#engravingMark');
+const placementImage = document.querySelector('#placementImage');
+const placementCaption = document.querySelector('#placementCaption');
+const reviewProductImage = document.querySelector('#reviewProductImage');
+const reviewProductName = document.querySelector('#reviewProductName');
 const appliedSummary = document.querySelector('#appliedSummary');
 const personalizeLink = document.querySelector('#openDrawer');
 const cartButton = document.querySelector('#cartButton');
@@ -128,6 +160,21 @@ function availableColors() {
 function availableTypes() {
   const finish = activeFinish();
   return finish ? finish.types : [];
+}
+
+function availableTargets() {
+  return productTargets.filter((target) => target.kits.includes(state.kit));
+}
+
+function activeTarget() {
+  return productTargets.find((target) => target.id === state.targetProduct);
+}
+
+function ensureTarget() {
+  const targets = availableTargets();
+  if (!targets.some((target) => target.id === state.targetProduct)) {
+    state.targetProduct = targets[0]?.id || 'wallet';
+  }
 }
 
 function renderKits() {
@@ -180,6 +227,26 @@ function renderColors() {
   }).join('');
 }
 
+function renderTargetProducts() {
+  ensureTarget();
+
+  const section = document.querySelector('#targetSection');
+  const wrap = document.querySelector('#targetChoices');
+  const targets = availableTargets();
+  section.hidden = targets.length < 2;
+
+  wrap.innerHTML = targets.map((target) => `
+    <button class="target-card ${state.targetProduct === target.id ? 'selected' : ''}" data-target="${target.id}">
+      <img src="${target.image}" alt="" />
+      <span>
+        <strong>${target.label}</strong>
+        <small>${target.detail}</small>
+      </span>
+      ${state.targetProduct === target.id ? '<span class="check">✓</span>' : '<span></span>'}
+    </button>
+  `).join('');
+}
+
 function renderDesignTypes() {
   const wrap = document.querySelector('#designTypes');
   const available = availableTypes();
@@ -204,14 +271,18 @@ function renderPlacements() {
 function selectedValues() {
   const kit = kits.find((item) => item.id === state.kit);
   const finish = activeFinish();
+  const target = activeTarget();
   const type = state.design ? designTypes.find((item) => item.id === state.design) : null;
   const placement = state.placement ? placements.find((item) => item.id === state.placement) : null;
+  const design = type?.label || 'Pending';
 
   return {
     kit: kit?.label || 'Pending',
     finish: finish?.label || 'Not selected',
     color: state.color || 'Pending',
-    design: type?.label || 'Pending',
+    target: target?.label || 'Wallet',
+    design,
+    designSummary: availableTargets().length > 1 ? `${target?.label || 'Wallet'} / ${design}` : design,
     designValue: state.design === 'icon' ? 'Selected icon' : (state.text || 'KL').toUpperCase(),
     placement: placement?.label || 'Pending',
   };
@@ -224,7 +295,7 @@ function renderSummary() {
     <div class="summary-item">
       <span class="summary-icon">${symbols[step]}</span>
       <b>${labels[step]}</b>
-      <span>${step === 'review' ? 'Before cart' : values[step]}</span>
+      <span>${step === 'review' ? 'Before cart' : (step === 'design' ? values.designSummary : values[step])}</span>
     </div>
   `).join('');
 
@@ -234,8 +305,10 @@ function renderSummary() {
 
 function renderReview() {
   const values = selectedValues();
+  const target = activeTarget();
   const rows = [
     ['Kit', values.kit, 'kit'],
+    ['Personalized item', values.target, 'design'],
     ['Finish', values.finish, 'finish'],
     ['Color', values.color, 'color'],
     ['Design type', values.design, 'design'],
@@ -243,7 +316,9 @@ function renderReview() {
     ['Placement', values.placement, 'placement'],
   ];
 
-  document.querySelector('#reviewSubtitle').textContent = `Personalized ${values.color}`;
+  reviewProductImage.src = target?.image || './assets/wallet-thumb.png';
+  reviewProductName.textContent = `RIDGE ${values.target.toUpperCase()}`;
+  document.querySelector('#reviewSubtitle').textContent = `${values.target} personalized in ${values.color}`;
   document.querySelector('#reviewList').innerHTML = rows.map(([label, value, step]) => `
     <div class="review-row">
       <span>${label}</span>
@@ -276,8 +351,11 @@ function renderSteps() {
 }
 
 function renderPlacementPreview() {
+  const target = activeTarget();
+  placementImage.src = target?.preview || './assets/wallet-main.png';
+  placementCaption.textContent = `Applying to ${target?.label || 'Wallet'}`;
   engravingMark.textContent = state.design === 'icon' ? '★' : (state.text || 'KL').toUpperCase();
-  engravingMark.className = `engraving-mark ${state.placement || 'bottom-right'}`;
+  engravingMark.className = `engraving-mark ${state.placement || 'bottom-right'} ${state.targetProduct || 'wallet'}`;
 }
 
 function renderTextCount() {
@@ -289,6 +367,7 @@ function render() {
   renderKits();
   renderFinishes();
   renderColors();
+  renderTargetProducts();
   renderDesignTypes();
   renderPlacements();
   renderSummary();
@@ -299,6 +378,7 @@ function render() {
 }
 
 function fillMissingChoices() {
+  ensureTarget();
   if (!state.finish) state.finish = 'laser';
   if (!state.color) state.color = availableColors()[0] || 'Royal Black';
   if (!state.design) state.design = availableTypes()[0] || 'text';
@@ -309,13 +389,14 @@ function applyPersonalization() {
   fillMissingChoices();
 
   const finishLabel = activeFinish().label;
+  const targetLabel = activeTarget()?.label || 'Wallet';
   const typeLabel = designTypes.find((type) => type.id === state.design)?.label || 'TEXT';
   const placementLabel = placements.find((placement) => placement.id === state.placement)?.label || 'BOTTOM RIGHT';
 
   appliedSummary.hidden = false;
   appliedSummary.innerHTML = `
     <b>Added to cart</b>
-    ${finishLabel} / ${state.color} / ${typeLabel} / ${placementLabel}
+    ${targetLabel} / ${finishLabel} / ${state.color} / ${typeLabel} / ${placementLabel}
   `;
   personalizeLink.textContent = 'Edit Personalization';
   cartButton.textContent = 'ADDED TO CART';
@@ -327,7 +408,10 @@ function nextStep() {
   const index = steps.indexOf(state.step);
   if (state.step === 'finish' && !state.finish) state.finish = 'laser';
   if (state.step === 'color' && !state.color) state.color = availableColors()[0] || 'Royal Black';
-  if (state.step === 'design' && !state.design) state.design = availableTypes()[0] || 'text';
+  if (state.step === 'design') {
+    ensureTarget();
+    if (!state.design) state.design = availableTypes()[0] || 'text';
+  }
   if ((state.step === 'placement' || state.step === 'review') && !state.placement) state.placement = 'bottom-right';
 
   if (index < steps.length - 1) {
@@ -349,6 +433,7 @@ document.addEventListener('click', (event) => {
   const kit = event.target.closest('[data-kit]');
   if (kit) {
     state.kit = kit.dataset.kit;
+    ensureTarget();
     render();
     return;
   }
@@ -374,6 +459,13 @@ document.addEventListener('click', (event) => {
   const design = event.target.closest('[data-design]');
   if (design && !design.disabled) {
     state.design = design.dataset.design;
+    render();
+    return;
+  }
+
+  const target = event.target.closest('[data-target]');
+  if (target) {
+    state.targetProduct = target.dataset.target;
     render();
     return;
   }
